@@ -1,0 +1,33 @@
+# Copy this file to settings.toml and edit as needed.
+# settings.toml is gitignored so secrets stay local.
+
+[llm]
+# provider: "ollama" or "bigpickle"
+provider = "ollama"
+base_url = "http://localhost:11434/v1"
+model = "qwen2.5:7b"
+api_key = "ollama"   # placeholder — required by openai client even for Ollama
+
+# Big Pickle example (uncomment + switch provider):
+# provider = "bigpickle"
+# base_url = "https://opencode.example/v1"   # confirm actual endpoint
+# model = "opencode/big-pickle"
+# api_key = "your-bigpickle-key"
+
+[diffusion]
+sdxl_model = "stabilityai/stable-diffusion-xl-base-1.0"
+ip_adapter_repo = "h94/IP-Adapter"
+ip_adapter_subfolder = "sdxl_models"
+ip_adapter_weight = "ip-adapter_sdxl.bin"
+device = "cuda"
+ip_adapter_scale = 0.6
+num_inference_steps = 30
+guidance_scale = 7.0
+
+[output]
+dir = "outputs"
+image_size = 1024
+
+[server]
+host = "0.0.0.0"
+port = 8000
