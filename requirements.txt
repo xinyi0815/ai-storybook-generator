@@ -4,10 +4,11 @@ openai>=1.30.0
 # Diffusion stack (workstation)
 # Pin torch in the install command, not here, so the right CUDA wheel resolves
 torch>=2.1.0
-diffusers>=0.27.0,<0.32.0
-# transformers >=4.50 references torch.float8_e8m0fnu which requires torch >=2.6;
-# pinning lets older CUDA wheels (e.g. cu124 torch 2.5) keep working.
-transformers>=4.40.0,<4.50.0
+# Pinned combo: latest diffusers (>=0.32) needs transformers 5.x; transformers
+# 5.x needs torch.float8_e8m0fnu (torch >=2.6). Locking to a known-good 2024-era
+# combo keeps cu124 / torch 2.5 wheels working out of the box.
+diffusers==0.31.0
+transformers==4.46.3
 accelerate>=0.27.0
 safetensors>=0.4.0
 
