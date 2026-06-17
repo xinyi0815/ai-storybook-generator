@@ -22,6 +22,11 @@ outputs/
 *.pdf
 !docs/**/*.pdf
 
+# Test images downloaded locally
+test_*.png
+*.png
+!docs/**/*.png
+
 # Diffusion model weights cache
 .cache/
 models/
