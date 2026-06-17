@@ -27,8 +27,10 @@ def generate_page(
     pipe.set_ip_adapter_scale(scale)
 
     negative = (
-        "blurry, low quality, deformed, ugly, text, watermark, signature, "
-        "multiple characters, duplicate character, inconsistent character"
+        "character sheet, model sheet, reference sheet, multiple poses, montage, "
+        "multiple characters, duplicate, two characters, group of characters, "
+        "inconsistent character, blurry, low quality, deformed, ugly, "
+        "text, watermark, signature"
     )
 
     generator = torch.Generator(device=cfg["device"]).manual_seed(seed)

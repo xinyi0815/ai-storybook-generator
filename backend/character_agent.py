@@ -74,14 +74,17 @@ def generate_reference(sheet: CharacterSheet, seed: int = 42) -> Image.Image:
     pipe = get_pipeline()
 
     prompt = (
-        f"character reference sheet of {sheet.name} the {sheet.species}, "
+        f"a single {sheet.species} named {sheet.name}, "
         f"{sheet.appearance}, "
-        f"full body, centered, plain neutral background, T-pose, "
+        f"full body portrait, standing alone, centered, "
+        f"clean simple neutral background, soft even lighting, "
         f"{sheet.style_anchor}"
     )
     negative = (
-        "blurry, low quality, deformed, ugly, extra limbs, multiple characters, "
-        "busy background, text, watermark"
+        "character sheet, model sheet, reference sheet, multiple poses, montage, "
+        "multiple characters, duplicate, two characters, group of characters, "
+        "blurry, low quality, deformed, ugly, extra limbs, "
+        "busy background, text, watermark, signature"
     )
 
     generator = torch.Generator(device=cfg["device"]).manual_seed(seed)
