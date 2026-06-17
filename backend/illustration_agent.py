@@ -5,7 +5,7 @@ import logging
 import torch
 from PIL import Image
 
-from .character_agent import get_pipeline
+from .character_agent import ensure_ip_adapter_loaded
 from .config import load_settings
 
 
@@ -22,7 +22,7 @@ def generate_page(
     cfg = settings["diffusion"]
     image_size = settings["output"]["image_size"]
 
-    pipe = get_pipeline()
+    pipe = ensure_ip_adapter_loaded()
     scale = ip_adapter_scale if ip_adapter_scale is not None else cfg["ip_adapter_scale"]
     pipe.set_ip_adapter_scale(scale)
 

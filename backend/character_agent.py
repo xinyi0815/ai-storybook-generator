@@ -15,16 +15,16 @@ logger = logging.getLogger(__name__)
 
 
 _pipeline: Optional[StableDiffusionXLPipeline] = None
+_ip_adapter_loaded: bool = False
 
 
 def get_pipeline() -> StableDiffusionXLPipeline:
-    """Lazy singleton — load SDXL + IP-Adapter once, reuse for both reference and pages."""
+    """Lazy singleton — load SDXL once and reuse."""
     global _pipeline
     if _pipeline is not None:
         return _pipeline
 
     cfg = load_settings()["diffusion"]
-
     logger.info("Loading SDXL pipeline: %s", cfg["sdxl_model"])
     pipe = StableDiffusionXLPipeline.from_pretrained(
         cfg["sdxl_model"],
@@ -33,6 +33,24 @@ def get_pipeline() -> StableDiffusionXLPipeline:
         use_safetensors=True,
     ).to(cfg["device"])
 
+    _pipeline = pipe
+    return pipe
+
+
+def ensure_ip_adapter_loaded() -> StableDiffusionXLPipeline:
+    """Load IP-Adapter onto the shared pipeline on first call.
+
+    Kept separate from get_pipeline because loading IP-Adapter mutates
+    UNet config (encoder_hid_dim_type='ip_image_proj'), making EVERY
+    subsequent call require image_embeds. So reference generation
+    deliberately runs before this is called.
+    """
+    global _ip_adapter_loaded
+    pipe = get_pipeline()
+    if _ip_adapter_loaded:
+        return pipe
+
+    cfg = load_settings()["diffusion"]
     logger.info(
         "Loading IP-Adapter: %s/%s/%s",
         cfg["ip_adapter_repo"],
@@ -44,9 +62,7 @@ def get_pipeline() -> StableDiffusionXLPipeline:
         subfolder=cfg["ip_adapter_subfolder"],
         weight_name=cfg["ip_adapter_weight"],
     )
-    pipe.set_ip_adapter_scale(0.0)
-
-    _pipeline = pipe
+    _ip_adapter_loaded = True
     return pipe
 
 
@@ -56,7 +72,6 @@ def generate_reference(sheet: CharacterSheet, seed: int = 42) -> Image.Image:
     image_size = settings["output"]["image_size"]
 
     pipe = get_pipeline()
-    pipe.set_ip_adapter_scale(0.0)
 
     prompt = (
         f"character reference sheet of {sheet.name} the {sheet.species}, "
